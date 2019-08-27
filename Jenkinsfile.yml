@@ -1,0 +1,33 @@
+version: '1'
+
+apiGW:
+  stage: 'securityManagement'
+
+lambdas:
+
+  - name: 'hello'
+    subPackage: 'zipkin-tracer'
+    handler: 'src/index.handler'
+    memory: 512
+    timeout: 300
+    environment:
+      - PORT: '8080'
+
+    stacks:
+
+      - stack: 'dev'
+        environment:
+          - PROFILE_ACTIVE: 'dev'
+
+      - stack: 'stg'
+        memory: 768
+        timeout: 300
+        environment:
+          - PROFILE_ACTIVE: 'stg'
+
+      - stack: 'pro'
+        memory: 1024
+        timeout: 300
+        environment:
+          - PROFILE_ACTIVE: 'prod'
+

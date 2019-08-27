@@ -1,0 +1,351 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.0.1",
+    "title": "AWS_APIGATEWAY",
+    "termsOfService": "http://en.wikipedia.org/wiki/Terms_of_service",
+    "license": {
+      "name": "See License",
+      "url": "https://www.grupoaval.com"
+    }
+  },
+  "host": "localhost",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "cashout-otp-controller",
+      "description": "Cashout Otp Controller"
+    },
+    {
+      "name": "transfer-controller",
+      "description": "Transfer Controller"
+    }
+  ],
+  "paths": {
+    "/bavv-tx-service/v1/cashout-otp": {
+      "post": {
+        "tags": [
+          "cashout-otp-controller"
+        ],
+        "summary": "Endpoint to request a Cashout OTP.",
+        "operationId": "generateCashoutOtpUsingPOST_2",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json;charset=UTF-8"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "request",
+            "description": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OtpRequestDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The Cashout request was successful.",
+            "schema": {
+              "$ref": "#/definitions/OtpResponseDTO"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "The input payload is malformed."
+          },
+          "401": {
+            "description": "There was a problem validating the token."
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false,
+        "x-amazon-apigateway-integration": {
+          "uri": "AWS_LAMBDA_ARN_PREFIX:AWS_STACK_PREFIX-calculator/invocations",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          },
+          "passthroughBehavior": "when_no_templates",
+          "httpMethod": "POST",
+          "requestTemplates": {
+            "application/json": "{\n\"managerEmail\": \"$context.authorizer.claims.email\",\n\"content\": $input.body\n}"
+          },
+          "contentHandling": "CONVERT_TO_TEXT",
+          "type": "aws"
+        }
+      },
+      "options": {
+        "tags": [
+          "cashout-otp-controller"
+        ],
+        "summary": "Endpoint to request a Cashout OTP.",
+        "operationId": "generateCashoutOtpUsingOPTIONS_1",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json;charset=UTF-8"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "request",
+            "description": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OtpRequestDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The Cashout request was successful.",
+            "schema": {
+              "$ref": "#/definitions/OtpResponseDTO"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "The input payload is malformed."
+          },
+          "401": {
+            "description": "There was a problem validating the token."
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false,
+        "responses": {
+          "202": {
+            "description": "200 response",
+            "headers": {
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "passthroughBehavior": "when_no_match",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\" : 200}"
+          },
+          "responses": {
+            "default": {
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with, X-Client-Trace-Id, x-xss-protection, x-frame-options, x-content-type-options'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "statusCode": "202"
+            }
+          },
+          "type": "mock"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "AWS_AUTHORIZER_NAME": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "x-amazon-apigateway-authtype": "cognito_user_pools",
+      "x-amazon-apigateway-authorizer": {
+        "providerARNs": [
+          "AWS_COGNITO_USER_POOL_ARN"
+        ],
+        "type": "cognito_user_pools"
+      }
+    }
+  },
+  "definitions": {
+    "GenericResponseDTO": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "title": "GenericResponseDTO"
+    },
+    "OtpRequestDTO": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "beneficiaryDocumentId": {
+          "type": "string"
+        },
+        "cashoutType": {
+          "type": "string",
+          "enum": [
+            "WITHOUT_CARD",
+            "MONEY_ORDER"
+          ]
+        },
+        "channel": {
+          "type": "string",
+          "enum": [
+            "ATM",
+            "CB"
+          ]
+        },
+        "currency": {
+          "type": "string",
+          "enum": [
+            "COLOMBIAN_PESO"
+          ]
+        },
+        "ipAddress": {
+          "type": "string"
+        },
+        "sourceProduct": {
+          "$ref": "#/definitions/ProductDTO"
+        },
+        "userInfo": {
+          "$ref": "#/definitions/UserInfo"
+        }
+      },
+      "title": "OtpRequestDTO"
+    },
+    "OtpResponseDTO": {
+      "type": "object",
+      "properties": {
+        "approvalId": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "otp": {
+          "type": "string"
+        },
+        "transactionDate": {
+          "type": "string"
+        }
+      },
+      "title": "OtpResponseDTO"
+    },
+    "ProductDTO": {
+      "type": "object",
+      "properties": {
+        "bank": {
+          "type": "string",
+          "enum": [
+            "BANCO_DE_BOGOTA",
+            "BANCO_POPULAR",
+            "BANCO_OCCIDENTE",
+            "BANCO_AV_VILLAS"
+          ]
+        },
+        "productId": {
+          "type": "string"
+        },
+        "productType": {
+          "type": "string",
+          "enum": [
+            "CCA",
+            "CDA",
+            "CLA",
+            "DDA",
+            "EQU",
+            "ILA",
+            "LOC",
+            "LOP",
+            "SDA",
+            "SPA",
+            "SRA",
+            "DLA",
+            "LPA",
+            "D",
+            "AFC",
+            "CEL"
+          ]
+        }
+      },
+      "title": "ProductDTO"
+    },
+    "TransferRequestDTO": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "ipAddress": {
+          "type": "string"
+        },
+        "sourceAccount": {
+          "$ref": "#/definitions/ProductDTO"
+        },
+        "targetAccount": {
+          "$ref": "#/definitions/ProductDTO"
+        },
+        "userInfo": {
+          "$ref": "#/definitions/UserInfo"
+        }
+      },
+      "title": "TransferRequestDTO"
+    },
+    "UserInfo": {
+      "type": "object",
+      "properties": {
+        "companyId": {
+          "type": "string"
+        },
+        "documentNumber": {
+          "type": "string"
+        },
+        "documentType": {
+          "type": "string"
+        }
+      },
+      "title": "UserInfo"
+    }
+  }
+}
