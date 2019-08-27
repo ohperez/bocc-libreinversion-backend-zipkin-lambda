@@ -1,0 +1,9 @@
+/zipkin-tracer/node_modules
+/zipkin-tracer/node_modules/*
+/node_modules
+node_modules/*
+zipkin-tracer/.nyc_output/*
+zipkin-tracer/coverage/*
+.DS_Store
+/.scannerwork/*
+Thumbs.db
