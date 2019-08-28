@@ -20,13 +20,13 @@ lambdas:
           - PROFILE_ACTIVE: 'dev'
 
       - stack: 'stg'
-        memory: 768
+        memory: 512
         timeout: 300
         environment:
           - PROFILE_ACTIVE: 'stg'
 
       - stack: 'pro'
-        memory: 1024
+        memory: 512
         timeout: 300
         environment:
           - PROFILE_ACTIVE: 'prod'

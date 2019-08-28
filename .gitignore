@@ -7,3 +7,4 @@ zipkin-tracer/coverage/*
 .DS_Store
 /.scannerwork/*
 Thumbs.db
+zipkin-tracer/dist/

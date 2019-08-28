@@ -1,28 +1,27 @@
-/* eslint-disable no-console */
-const {
-    Tracer,
-    BatchRecorder,
-    jsonEncoder: {JSON_V2}
-  } = require('zipkin');
-  const CLSContext = require('zipkin-context-cls');
-  const {HttpLogger} = require('zipkin-transport-http');
+var Tracer = require('zipkin').Tracer;
+var ConsoleRecorder = require('zipkin').ConsoleRecorder;
+var CLSContext = require('zipkin-context-cls');
 
-exports.handler = async (event, context) => {
+const handler = (event, context, callback) => {
+    
     const tracer = new Tracer({
         ctxImpl: new CLSContext('zipkin'),
-        recorder: new BatchRecorder({
-          logger: new HttpLogger({
-            endpoint: 'http://localhost:9411/api/v2/spans',
-            jsonEncoder: JSON_V2
-          })
-        }),
-        localServiceName: 'service-a' // name of this application
-      });
-      // now use tracer to construct instrumentation! For example, fetch
-      const wrapFetch = require('zipkin-instrumentation-fetch');
-      
-      const remoteServiceName = 'youtube';
-      const zipkinFetch = wrapFetch(fetch, {tracer, remoteServiceName});
+        traceId128Bit: true,
+        recorder: new ConsoleRecorder(function(){}),
+        localServiceName: 'service-1'
+    });
+    
+    callback(null, tracer.id.traceId);
+}
 
-  return console.log('zipkin ', zipkinFetch);
-};
+module.exports = {
+    handler
+}
+
+handler(null, null, (err, data) => {
+    if (err) {
+        console.error(err)
+    } else {
+        console.log(data)
+    }
+})
